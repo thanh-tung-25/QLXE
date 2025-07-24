@@ -7,71 +7,70 @@ use App\Models\Car;
 
 class CarController extends Controller
 {
-    // 👉 Hiển thị danh sách xe
+    // Hiển thị danh sách xe (có phân trang)
     public function index()
     {
-        $cars = Car::all();
+        $cars = Car::latest()->paginate(5); // phân trang 5 xe mỗi trang
         return view('cars.index', compact('cars'));
     }
 
-    // 👉 Hiển thị form thêm xe
+    // Hiển thị form thêm xe
     public function create()
     {
         return view('cars.create');
     }
 
-    // 👉 Lưu xe mới vào database
+    // Lưu xe mới
     public function store(Request $request)
     {
-        // ✅ Kiểm tra dữ liệu hợp lệ
+        
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|max:255',
             'brand' => 'required',
-            'price' => 'required|integer|min:0',
+            'color' => 'required',
+            'year' => 'required|integer|min:1900|max:' . date('Y'),
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|max:1000',
         ]);
 
-        // ✅ Lưu xe vào database
-        Car::create([
-            'name' => $request->name,
-            'brand' => $request->brand,
-            'price' => $request->price,
-            'color' => $request->color,
-            'year' => $request->year,
-            'description' => $request->description,
-        ]);
+        Car::create($request->all());
 
-        // ✅ Quay lại danh sách với thông báo
         return redirect()->route('cars.index')->with('success', 'Thêm xe thành công!');
     }
-    // Hiển thị form sửa xe
-public function edit($id)
-{
-    $car = Car::findOrFail($id);
-    return view('cars.edit', compact('car'));
-}
 
-// Lưu thông tin xe đã chỉnh sửa
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'name' => 'required',
-        'brand' => 'required',
-        'price' => 'required|integer|min:0',
-    ]);
+    // Hiển thị 1 xe cụ thể (không bắt buộc nếu không dùng)
+    public function show(Car $car)
+    {
+        return view('cars.show', compact('car'));
+    }
 
-    $car = Car::findOrFail($id);
-    $car->update([
-        'name' => $request->name,
-        'brand' => $request->brand,
-        'price' => $request->price,
-        'color' => $request->color,
-        'year' => $request->year,
-        'description' => $request->description,
-    ]);
-    
+    // Hiển thị form sửa
+    public function edit(Car $car)
+    {
+        return view('cars.edit', compact('car'));
+    }
 
-    return redirect()->route('cars.index')->with('success', 'Cập nhật xe thành công!');
-}
+    // Cập nhật xe
+    public function update(Request $request, Car $car)
+    {
+        $request->validate([
+            'name' => 'required|max:255',
+            'brand' => 'required',
+            'color' => 'required',
+            'year' => 'required|integer|min:1900|max:' . date('Y'),
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|max:1000',
+        ]);
 
+        $car->update($request->all());
 
+        return redirect()->route('cars.index')->with('success', 'Cập nhật xe thành công!');
+    }
+
+    // Xóa xe
+    public function destroy(Car $car)
+    {
+        $car->delete();
+        return redirect()->route('cars.index')->with('success', 'Xóa xe thành công!');
+    }
 }
