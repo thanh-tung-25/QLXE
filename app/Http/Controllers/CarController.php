@@ -68,8 +68,10 @@ public function update(Request $request, $id)
         'year' => $request->year,
         'description' => $request->description,
     ]);
+    
 
     return redirect()->route('cars.index')->with('success', 'Cập nhật xe thành công!');
 }
+
 
 }
