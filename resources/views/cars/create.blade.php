@@ -64,16 +64,20 @@
                     <label for="price" class="form-label">💰 Giá (VNĐ)</label>
                     <input type="number" class="form-control" id="price" name="price" placeholder="VD: 680000000" required>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Ảnh xe</label>
+                    <input type="file" name="image" class="form-control" id="imageInput" accept="image/*" onchange="previewImage()">
+                    <div class="mt-2">
+                        <img id="preview" src="#" alt="Chưa có ảnh" class="img-thumbnail" style="display: none; max-height: 200px;">
+                    </div>
+                </div>
 
                 <div class="d-flex justify-content-between">
                     <a href="{{ route('cars.index') }}" class="btn btn-secondary">⬅️ Quay lại</a>
                     <button type="submit" class="btn btn-primary">💾 Lưu xe</button>
                 </div>
                 <form action="..." method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label>Ảnh xe</label>
-                    <input type="file" name="image" class="form-control">
-                </div>
+                
 
             </form>
         </div>

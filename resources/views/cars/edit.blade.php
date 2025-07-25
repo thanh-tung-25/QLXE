@@ -61,14 +61,14 @@
                             <label for="price" class="form-label">Giá bán (VNĐ)</label>
                             <input type="number" class="form-control" id="price" name="price" value="{{ $car->price }}" required>
                         </div>
-
+                        @if ($car->image)
+                            <img src="{{ asset('images/' . $car->image) }}" width="150" class="mb-2">
+                        @endif  
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('cars.index') }}" class="btn btn-secondary">⬅️ Trở về</a>
                             <button type="submit" class="btn btn-success">💾 Lưu thay đổi</button>
                         </div>
-                        @if ($car->image)
-                            <img src="{{ asset('images/' . $car->image) }}" width="150" class="mb-2">
-                        @endif
+                        
 
                     </form>
                 </div>
