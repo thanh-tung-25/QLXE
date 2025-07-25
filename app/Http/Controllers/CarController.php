@@ -8,11 +8,40 @@ use App\Models\Car;
 class CarController extends Controller
 {
     // Hiển thị danh sách xe (có phân trang)
-    public function index()
-    {
-        $cars = Car::latest()->paginate(5); // phân trang 5 xe mỗi trang
-        return view('cars.index', compact('cars'));
+   public function index(Request $request)
+{
+    $query = Car::query();
+
+    // Tìm kiếm theo tên xe
+    if ($request->filled('name')) {
+        $query->where('name', 'like', '%' . $request->name . '%');
     }
+
+    // Lọc theo hãng
+    if ($request->filled('brand')) {
+        $query->where('brand', 'like', '%' . $request->brand . '%');
+    }
+
+    // Lọc theo năm
+    if ($request->filled('year')) {
+        $query->where('year', $request->year);
+    }
+
+    // Lọc theo khoảng giá
+    if ($request->filled('price_min')) {
+        $query->where('price', '>=', $request->price_min);
+    }
+
+    if ($request->filled('price_max')) {
+        $query->where('price', '<=', $request->price_max);
+    }
+
+    // Phân trang và giữ query filter
+    $cars = $query->latest()->paginate(5)->withQueryString();
+
+    return view('cars.index', compact('cars'));
+}
+
 
     // Hiển thị form thêm xe
     public function create()
@@ -33,7 +62,17 @@ class CarController extends Controller
             'description' => 'nullable|max:1000',
         ]);
 
-        Car::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images'), $fileName);
+            $data['image'] = $fileName;
+        }
+
+        Car::create($data);
+
 
         return redirect()->route('cars.index')->with('success', 'Thêm xe thành công!');
     }
@@ -62,7 +101,17 @@ class CarController extends Controller
             'description' => 'nullable|max:1000',
         ]);
 
-        $car->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images'), $fileName);
+            $data['image'] = $fileName;
+        }
+
+        $car->update($data);
+
 
         return redirect()->route('cars.index')->with('success', 'Cập nhật xe thành công!');
     }

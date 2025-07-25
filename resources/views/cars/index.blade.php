@@ -48,6 +48,28 @@
             <button class="btn btn-outline-secondary" type="button" disabled>Tìm</button>
         </div>
     </form>
+    <!-- 🔍 FORM LỌC XE -->
+<form method="GET" class="row g-3 mb-4">
+    <div class="col-md-2">
+        <input type="text" name="name" class="form-control" placeholder="Tên xe" value="{{ request('name') }}">
+    </div>
+    <div class="col-md-2">
+        <input type="text" name="brand" class="form-control" placeholder="Hãng" value="{{ request('brand') }}">
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="year" class="form-control" placeholder="Năm" value="{{ request('year') }}">
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="price_min" class="form-control" placeholder="Giá từ" value="{{ request('price_min') }}">
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="price_max" class="form-control" placeholder="Giá đến" value="{{ request('price_max') }}">
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-secondary w-100">Lọc</button>
+    </div>
+</form>
+<a href="{{ route('cars.index') }}" class="btn btn-outline-dark btn-sm">Xóa lọc</a>
 
     {{-- BẢNG XE --}}
     <div class="card shadow-sm card-table">
@@ -59,6 +81,7 @@
                     <th>Hãng</th>
                     <th>Năm</th>
                     <th>Giá (VNĐ)</th>
+                    <th>Ảnh</th>
                     <th width="20%">Thao tác</th>
                 </tr>
             </thead>
@@ -78,7 +101,20 @@
                             @method('DELETE')
                             <button class="btn btn-sm btn-outline-danger">Xóa</button>
                         </form>
+                        @if ($car->image)
+                            <img src="{{ asset('images/' . $car->image) }}" width="80">
+                        @else
+                            (Không có ảnh)
+                        @endif
                     </td>
+                    <td>
+                        @if ($car->image)
+                            <img src="{{ asset('images/' . $car->image) }}" width="80">
+                        @else
+                            (Không có ảnh)
+                        @endif
+                    </td>
+
                 </tr>
             @endforeach
             </tbody>
@@ -89,6 +125,7 @@
     <div class="mt-4 d-flex justify-content-center">
         {{ $cars->links() }}
     </div>
+    
 
     @endif
 </div>

@@ -19,7 +19,9 @@ return new class extends Migration
         $table->string('color')->nullable(); // Màu sắc (có thể để trống)
         $table->integer('year')->nullable(); // Năm sản xuất (có thể để trống)
         $table->text('description')->nullable(); // Mô tả chi tiết
-        $table->timestamps();               // created_at, updated_at
+        $table->timestamps();  
+        $table->string('image')->nullable(); // ảnh xe
+             // created_at, updated_at
     });
 }
 };
